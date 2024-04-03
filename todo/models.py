@@ -1,23 +1,23 @@
-from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Time, create_engine
+from flask_sqlalchemy import SQLAlchemy
 
 DATABASE_NAME = 'app.db'
 
 engine = create_engine(f'sqlite:///{DATABASE_NAME}')
 Session = sessionmaker(bind=engine)
 
-Base = declarative_base()
+db = SQLAlchemy()
 
 
-class Category(Base):
+class Category(db.Model):
     __tablename__ = 'category'
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
 
-class Tasks(Base):
+class Tasks(db.Model):
     __tablename__ = 'tasks'
 
     id = Column(Integer, primary_key=True)
@@ -29,8 +29,3 @@ class Tasks(Base):
     category_id = Column(Integer, ForeignKey('category.id'))
 
 
-def create_db():
-    Base.metadata.create_all(engine)
-
-
-create_db()

@@ -17,7 +17,7 @@
 <div class="ui segment">
     <p class="ui big header">№{{ todo.id }} {{ todo.title }}</p>
 
-    {% if todo.is_complete == False %}
+    {% if todo.status == False %}
     <span class="ui gray label">Не завершено</span>
     <a class="ui primary basic button" href="/update/{{ todo.id }}">Закрыть</a>
     {% else %}
