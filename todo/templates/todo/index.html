@@ -3,7 +3,7 @@
 {% block content %}
 
 <div style="margin-top: 50px;" class="ui container">
-    <h1 class="ui center aligned header">Мой менеджер задач</h1>
+    <h1 class="ui center aligned header">Huello</h1>
 
     {% for category in category_list %}
 
@@ -23,16 +23,27 @@
         {% if task.category_id == category.id %}
         <div class="ui segment">
 
-            <p class="ui big header">{{ task.title }}</p>
+            <p class="ui big header open-modal">{{ task.title }}</p>
 
             {% if task.status == False %}
-            <span class="ui big gray label">▢</span>
-            <a class="ui positive basic button" href="/update/{{ task.id }}">Завершено</a>
+            <a class="ui gray button" href="/update/{{ task.id }}">▢</a>
             {% else %}
-            <span class="ui big green label">✔</span>
-            <a class="ui negative basic button" href="/update/{{ task.id }}">Не завершено</a>
+            <a class="ui green button" href="/update/{{ task.id }}">✔</a>
             {% endif %}
             <a class="ui negative button" href="/delete/{{ task.id }}">Удалить</a>
+
+            <div id="description" class="modal">
+                <div class="modal-content">
+                    <span class="close"></span>
+
+                    <form class="ui form" action="/add_description/{{ task.id }}" method="post">
+                        <div class="field">
+                            <textarea type="text" name="description" placeholder="Описание"></textarea>
+                        </div>
+                        <button class="ui black button" type="submit">Добавить</button>
+                    </form>
+                </div>
+            </div>
 
         </div>
         {% endif %}
