@@ -38,9 +38,19 @@ def add_category():
 @app.post('/add_task/<int:index>')
 def add_task(index):
     title = request.form.get('title')
+
     new_task = Tasks(title=title, status=False, category_id=index)
     db.session.add(new_task)
     db.session.commit()
+    return redirect(url_for('home'))
+
+
+@app.post('/add_description/<int:task_id>')
+def add_description(task_id):
+    task = db.session.query(Tasks).filter_by(id=task_id).first()
+    description = request.form.get('description')
+    task.description = description
+    db.session.close()
     return redirect(url_for('home'))
 
 
