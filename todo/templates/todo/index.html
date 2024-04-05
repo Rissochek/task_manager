@@ -5,7 +5,7 @@
 <div style="margin-top: 50px;" class="ui container">
     <h1 class="ui center aligned header">Мой менеджер задач</h1>
 
-    {% for task in task_list %}
+    {% for category in category_list %}
 
     <div class="ui segment">
 
@@ -18,10 +18,9 @@
         </form>
 
         {% for task in task_list %}
-
+        {% if task.category_id == category.id %}
         <div class="ui segment">
             <p class="ui big header">{{ task.title }}</p>
-
             {% if task.status == False %}
             <span class="ui big gray label">▢</span>
             <a class="ui positive basic button" href="/update/{{ task.id }}">Завершено</a>
@@ -31,7 +30,7 @@
             {% endif %}
             <a class="ui negative button" href="/delete/{{ task.id }}">Удалить</a>
         </div>
-
+        {% endif %}
         {% endfor %}
 
     </div>
@@ -41,7 +40,7 @@
     <form class="ui form" action="/add_category" method="post">
         <div class="field">
             <label>Новая группа</label>
-            <input type="text" name="title" placeholder="Введите название группы"><br>
+            <input type="text" name="name" placeholder="Введите название группы"><br>
         </div>
         <button class="ui black button" type="submit">Добавить</button>
     </form>

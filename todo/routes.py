@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, url_for, redirect
-from todo.models import db, Tasks
+from todo.models import db, Tasks, Category
+from sqlalchemy import func
 
 
 def create_app():
@@ -15,30 +16,45 @@ app = create_app()
 
 @app.get('/')
 def home():
-    todo_list = Tasks.query.all()
-    return render_template('todo/index.html', todo_list=todo_list, title='Главная страница')
+    task_list = Tasks.query.all()
+    category_list = Category.query.all()
+    return render_template('todo/index.html', task_list=task_list, title='Главная страница',
+                           category_list=category_list)
 
 
-@app.post('/add')
-def add():
+@app.post('/add_category')
+def add_category():
+    name = request.form.get('name')
+    max_id = db.session.query(func.max(Category.id)).scalar()
+    if max_id is not None:
+        new_category = Category(name=name, id=max_id + 1)
+    else:
+        new_category = Category(name=name, id=1)
+    db.session.add(new_category)
+    db.session.commit()
+    return redirect(url_for('home'))
+
+
+@app.post('/add_task')
+def add_task():
     title = request.form.get('title')
-    new_todo = Tasks(title=title, status=False)
-    db.session.add(new_todo)
+    new_task = Tasks(title=title, status=False)  # category_id = Category.query(func.max(Category.id)).scalar()
+    db.session.add(new_task)
     db.session.commit()
     return redirect(url_for('home'))
 
 
-@app.get('/update/<int:todo_id>')
-def update(todo_id):
-    todo = Tasks.query.filter_by(id=todo_id).first()
-    todo.status = not todo.status
+@app.get('/update/<int:task_id>')
+def update(task_id):
+    task = Tasks.query.filter_by(id=task_id).first()
+    task.status = not task.status
     db.session.commit()
     return redirect(url_for('home'))
 
 
-@app.get('/delete/<int:todo_id>')
-def delete(todo_id):
-    todo = Tasks.query.filter_by(id=todo_id).first()
-    db.session.delete(todo)
+@app.get('/delete/<int:task_id>')
+def delete(task_id):
+    task = Tasks.query.filter_by(id=task_id).first()
+    db.session.delete(task)
     db.session.commit()
     return redirect(url_for('home'))
