@@ -1,19 +1,23 @@
-var modal = document.getElementById("description");
-var closeBtn = document.getElementsByClassName("close")[0];
-var openButtons = document.getElementsByClassName("open-modal");
-
-closeBtn.onclick = function () {
-    modal.style.display = "none";
-}
-
-for (var i = 0; i < openButtons.length; i++) {
-    openButtons[i].onclick = function () {
+// Найти все заголовки задач и добавить обработчик клика
+var taskHeaders = document.querySelectorAll('.open-modal');
+taskHeaders.forEach(function(header) {
+    header.addEventListener('click', function() {
+        // Найти id задачи из data-атрибута
+        var taskId = header.getAttribute('data-task-id');
+        // Показать модальное окно для этой задачи
+        var modal = document.getElementById('description-' + taskId);
         modal.style.display = "block";
-    }
-}
+    });
+});
 
-window.onclick = function (event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
+// Закрыть модальное окно при клике вне его области
+window.addEventListener('click', function(event) {
+    var modals = document.querySelectorAll('.modal');
+    modals.forEach(function(modal) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    });
+});
+
+

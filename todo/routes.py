@@ -46,7 +46,7 @@ def add_task(index):
 
 @app.post('/update_description/<int:task_id>')
 def update_description(task_id):
-    task = db.session.query(Tasks).filter_by(id=task_id).first()
+    task = Tasks.query.filter_by(id=task_id).first()
     description = request.form.get('description')
     task.description = description
     db.session.commit()

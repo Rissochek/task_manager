@@ -23,19 +23,19 @@
         {% if task.category_id == category.id %}
         <div class="ui segment">
 
-            <p class="ui big header open-modal">{{ task.title }}</p>
+            <p class="ui big header open-modal" data-task-id="{{ task.id }}">{{ task.title }}</p>
 
             {% if task.status == False %}
             <a class="ui gray button" href="/update/{{ task.id }}">▢</a>
             {% else %}
             <a class="ui green button" href="/update/{{ task.id }}">✔</a>
             {% endif %}
+
             <a class="ui negative button" href="/delete/{{ task.id }}">Удалить</a>
 
-            <div id="description" class="modal">
-                <div class="modal-content">
-                    <span class="close"></span>
 
+            <div id="description-{{ task.id }}" class="modal">
+                <div class="modal-content">
                     <form class="ui form" action="/update_description/{{ task.id }}" method="post">
                         <div class="field">
                             <input type="text" name="description" placeholder="Описание">
@@ -44,10 +44,10 @@
                     </form>
                 </div>
             </div>
-
         </div>
         {% endif %}
         {% endfor %}
+
 
     </div>
 
