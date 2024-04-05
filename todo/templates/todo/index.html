@@ -9,6 +9,8 @@
 
     <div class="ui segment">
 
+        <p class="ui big header">{{ category.name }}</p>
+
         <form class="ui form" action="/add_task" method="post">
             <div class="field">
                 <label>Новая задача</label>
@@ -20,7 +22,9 @@
         {% for task in task_list %}
         {% if task.category_id == category.id %}
         <div class="ui segment">
+
             <p class="ui big header">{{ task.title }}</p>
+
             {% if task.status == False %}
             <span class="ui big gray label">▢</span>
             <a class="ui positive basic button" href="/update/{{ task.id }}">Завершено</a>
@@ -29,6 +33,7 @@
             <a class="ui negative basic button" href="/update/{{ task.id }}">Не завершено</a>
             {% endif %}
             <a class="ui negative button" href="/delete/{{ task.id }}">Удалить</a>
+
         </div>
         {% endif %}
         {% endfor %}
