@@ -35,10 +35,10 @@ def add_category():
     return redirect(url_for('home'))
 
 
-@app.post('/add_task')
-def add_task():
+@app.post('/add_task/<int:index>')
+def add_task(index):
     title = request.form.get('title')
-    new_task = Tasks(title=title, status=False)  # category_id = Category.query(func.max(Category.id)).scalar()
+    new_task = Tasks(title=title, status=False, category_id=index)
     db.session.add(new_task)
     db.session.commit()
     return redirect(url_for('home'))
