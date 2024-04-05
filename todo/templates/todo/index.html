@@ -36,9 +36,9 @@
                 <div class="modal-content">
                     <span class="close"></span>
 
-                    <form class="ui form" action="/add_description/{{ task.id }}" method="post">
+                    <form class="ui form" action="/update_description/{{ task.id }}" method="post">
                         <div class="field">
-                            <textarea type="text" name="description" placeholder="Описание"></textarea>
+                            <input type="text" name="description" placeholder="Описание">
                         </div>
                         <button class="ui black button" type="submit">Добавить</button>
                     </form>
