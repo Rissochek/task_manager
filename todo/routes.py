@@ -61,9 +61,19 @@ def update(task_id):
     return redirect(url_for('home'))
 
 
-@app.get('/delete/<int:task_id>')
-def delete(task_id):
+@app.get('/delete_task/<int:task_id>')
+def delete_task(task_id):
     task = Tasks.query.filter_by(id=task_id).first()
     db.session.delete(task)
+    db.session.commit()
+    return redirect(url_for('home'))
+
+
+@app.get('/delete_category/<int:category_id>')
+def delete_category(category_id):
+    for task in Tasks.query.filter_by(category_id=category_id).all():
+        db.session.delete(task)
+    category = Category.query.filter_by(id=category_id).first()
+    db.session.delete(category)
     db.session.commit()
     return redirect(url_for('home'))

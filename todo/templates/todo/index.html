@@ -2,25 +2,29 @@
 
 {% block content %}
 
-<div style="margin-top: 50px;" class="ui container">
+<div class="ui container" style="margin-top: 50px;">
     <h1 class="ui center aligned header">Huello</h1>
 
     {% for category in category_list %}
 
+    <!-- category -->
     <div class="ui segment">
 
         <p class="ui big header">{{ category.name }}</p>
 
+        <!-- add_task -->
         <form class="ui form" action="/add_task/{{ category.id }}" method="post">
             <div class="field">
                 <label>Новая задача</label>
-                <input type="text" name="title" placeholder="Введите название задачи"><br>
+                <input type="text" name="title" placeholder="Введите название задачи" required>
             </div>
             <button class="ui black button" type="submit">Добавить</button>
         </form>
 
         {% for task in task_list %}
         {% if task.category_id == category.id %}
+
+        <!-- task -->
         <div class="ui segment">
 
             <p class="ui big header open-modal" data-task-id="{{ task.id }}">{{ task.title }}</p>
@@ -31,32 +35,51 @@
             <a class="ui green button" href="/update/{{ task.id }}">✔</a>
             {% endif %}
 
-            <a class="ui negative button" href="/delete/{{ task.id }}">Удалить</a>
-
-
+            <!-- task_description -->
             <div id="description-{{ task.id }}" class="modal">
                 <div class="modal-content">
                     <form class="ui form" action="/update_description/{{ task.id }}" method="post">
                         <div class="field">
-                            <input type="text" name="description" placeholder="Описание">
+
+                            {% if task.description == None %}
+                            <textarea name="description" placeholder="Описание задачи"></textarea>
+                            {% else %}
+                            <textarea name="description">{{ task.description }}</textarea>
+                            {% endif %}
+
                         </div>
                         <button class="ui black button" type="submit">Добавить</button>
                     </form>
                 </div>
             </div>
+
+            <!-- delete_task -->
+            <a class="ui negative button" href="/delete_task/{{ task.id }}">Удалить</a>
+
+            <!-- deadline -->
+            <div class="ui inverted calendar input left icon" id="example1">
+                <i class="calendar icon"></i>
+                <input type="text" placeholder="Date/Time">
+            </div>
+
         </div>
+
         {% endif %}
         {% endfor %}
 
+        <!-- delete_category -->
+        <a class="ui negative button" href="/delete_category/{{ category.id }}" style="margin-top: 5px;">Удалить
+            группу</a>
 
     </div>
 
     {% endfor %}
 
+    <!-- add_category -->
     <form class="ui form" action="/add_category" method="post">
         <div class="field">
             <label>Новая группа</label>
-            <input type="text" name="name" placeholder="Введите название группы"><br>
+            <input type="text" name="name" placeholder="Введите название группы" required>
         </div>
         <button class="ui black button" type="submit">Добавить</button>
     </form>
