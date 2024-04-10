@@ -27,7 +27,9 @@
         <!-- task -->
         <div class="ui segment">
 
-            <p class="ui big header open-modal" data-task-id="{{ task.id }}">{{ task.title }}</p>
+            <p class="ui big header">{{ task.title }} <span class="ui small basic button open-modal"
+                    data-task-id="{{ task.id }}">Описание задачи</span>
+            </p>
 
             {% if task.status == False %}
             <a class="ui gray button" href="/update/{{ task.id }}">▢</a>
@@ -41,20 +43,32 @@
                     <form class="ui form" action="/update_description/{{ task.id }}" method="post">
                         <div class="field">
 
-                            {% if task.description == None %}
+                            {% if task.description == None or task.description.strip() == "" %}
                             <textarea name="description" placeholder="Описание задачи"></textarea>
                             {% else %}
                             <textarea name="description">{{ task.description }}</textarea>
                             {% endif %}
 
                         </div>
-                        <button class="ui black button" type="submit">Добавить</button>
+                        <button class="ui black button" type="submit">Подтвердить</button>
                     </form>
                 </div>
             </div>
 
             <!-- delete_task -->
             <a class="ui negative button" href="/delete_task/{{ task.id }}">Удалить</a>
+
+            <!-- priority -->
+            <form class="ui form" action="/set_priority/{{ task.id }}" method="post">
+                <select class="ui dropdown" onchange="this.form.submit()">
+                    <option value="6">Приоритет</option>
+                    <option value="1">Lvl. 1</option>
+                    <option value="2">Lvl. 2</option>
+                    <option value="3">Lvl. 3</option>
+                    <option value="4">Lvl. 4</option>
+                    <option value="5">Lvl. 5</option>
+                </select>
+            </form>
 
             <!-- deadline -->
             <div class="ui inverted calendar input left icon" id="example1">

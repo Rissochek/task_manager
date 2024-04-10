@@ -20,4 +20,6 @@ window.addEventListener('click', function (event) {
     });
 });
 
+$('.ui.dropdown').dropdown();
+
 $('#example1').calendar();
