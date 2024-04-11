@@ -20,6 +20,21 @@ window.addEventListener('click', function (event) {
     });
 });
 
+$(document).ready(function(){
+    $('[id^="example-"]').each(function() {
+        var taskId = $(this).data('task-id');
+        console.log(taskId);
+        $(this).calendar({
+            onChange: function(date, text, mode) {
+               $.ajax({
+                    type: "POST",
+                    url: "/add_calendar",
+                    contentType: "application/json",
+                    data: JSON.stringify({ taskId: taskId, date: text }),
+                });
+            }
+        });
+    });
+});
 $('.ui.dropdown').dropdown();
 
-$('#example1').calendar();

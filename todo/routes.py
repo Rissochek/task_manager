@@ -1,6 +1,7 @@
-from flask import Flask, request, render_template, url_for, redirect
+from flask import Flask, request, render_template, url_for, redirect, jsonify
 from todo.models import db, Tasks, Category
 from sqlalchemy import func
+from datetime import datetime
 
 
 def create_app():
@@ -77,3 +78,22 @@ def delete_category(category_id):
     db.session.delete(category)
     db.session.commit()
     return redirect(url_for('home'))
+
+
+@app.post('/add_calendar')
+def add_calendar():
+    try:
+        data = request.json  # Получаем данные из JSON тела запроса
+        print("Received data:", data)  # Выводим данные для отладки
+        calendar_date = data['date']
+        task_id = data['taskId']
+        # Преобразовать строку в объект datetime
+        deadline_datetime = datetime.strptime(calendar_date, '%B %d, %Y %I:%M %p')
+
+        task = Tasks.query.filter_by(id=task_id).first()
+        task.deadline = deadline_datetime
+        db.session.commit()
+        return redirect(url_for('home'))
+    except Exception as e:
+        print("Error:", e)  # Выводим ошибку для отладки
+        return jsonify({'error': str(e)}), 500

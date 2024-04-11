@@ -1,5 +1,5 @@
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Time, create_engine
+from sqlalchemy import Column, Integer, String, Boolean,DateTime, ForeignKey, create_engine
 from flask_sqlalchemy import SQLAlchemy
 
 DATABASE_NAME = 'app.db'
@@ -24,7 +24,7 @@ class Tasks(db.Model):
     title = Column(String)
     description = Column(String)
     status = Column(Boolean)
-    deadline = Column(Time)
+    deadline = Column(DateTime)
     priority = Column(Integer)
     category_id = Column(Integer, ForeignKey('category.id'))
 

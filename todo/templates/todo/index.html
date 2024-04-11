@@ -70,11 +70,13 @@
                 </select>
             </form>
 
+
             <!-- deadline -->
-            <div class="ui inverted calendar input left icon" id="example1">
+            <div class="ui inverted calendar input left icon" id="example-{{ task.id }}" data-task-id="{{ task.id }}">
                 <i class="calendar icon"></i>
-                <input type="text" placeholder="Date/Time">
+                <input type="text" name="date" placeholder="Date/Time">
             </div>
+
 
         </div>
 
