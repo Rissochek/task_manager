@@ -60,13 +60,13 @@
 
             <!-- priority -->
             <form class="ui form" action="/set_priority/{{ task.id }}" method="post">
-                <select class="ui dropdown" onchange="this.form.submit()">
+                <select class="ui dropdown" onchange="this.form.submit()" name="value">
                     <option value="6">Приоритет</option>
-                    <option value="1">Lvl. 1</option>
-                    <option value="2">Lvl. 2</option>
-                    <option value="3">Lvl. 3</option>
-                    <option value="4">Lvl. 4</option>
-                    <option value="5">Lvl. 5</option>
+                    <option value="1" {% if task.priority == 1 %} selected {% endif %}>Lvl. 1</option>
+                    <option value="2" {% if task.priority == 2 %} selected {% endif %}>Lvl. 2</option>
+                    <option value="3" {% if task.priority == 3 %} selected {% endif %}>Lvl. 3</option>
+                    <option value="4" {% if task.priority == 4 %} selected {% endif %}>Lvl. 4</option>
+                    <option value="5" {% if task.priority == 5 %} selected {% endif %}>Lvl. 5</option>
                 </select>
             </form>
 

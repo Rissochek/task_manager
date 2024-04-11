@@ -97,3 +97,15 @@ def add_calendar():
     except Exception as e:
         print("Error:", e)  # Выводим ошибку для отладки
         return jsonify({'error': str(e)}), 500
+
+
+@app.post('/set_priority/<int:task_id>')
+def set_priority(task_id):
+    priority = int(request.form['value'])
+    task = Tasks.query.filter_by(id=task_id).first()
+    if task:
+        task.priority = priority
+        db.session.commit()
+        return redirect(url_for('home'))
+    else:
+        return 'Task not found', 404
