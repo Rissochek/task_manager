@@ -23,7 +23,6 @@ window.addEventListener('click', function (event) {
 $(document).ready(function(){
     $('[id^="example-"]').each(function() {
         var taskId = $(this).data('task-id');
-        console.log(taskId);
         $(this).calendar({
             onChange: function(date, text, mode) {
                $.ajax({

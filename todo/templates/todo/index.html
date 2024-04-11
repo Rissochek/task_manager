@@ -70,14 +70,11 @@
                 </select>
             </form>
 
-
             <!-- deadline -->
             <div class="ui inverted calendar input left icon" id="example-{{ task.id }}" data-task-id="{{ task.id }}">
                 <i class="calendar icon"></i>
-                <input type="text" name="date" placeholder="Date/Time">
+                <input type="text" name="date" value="{% if task.deadline %}{{ task.deadline.strftime('%B %d, %Y %I:%M %p') }}{% endif %}" placeholder="Date/Time">
             </div>
-
-
         </div>
 
         {% endif %}
