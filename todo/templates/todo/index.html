@@ -10,9 +10,24 @@
     <!-- category -->
     <div class="ui segment">
 
+        <!-- name -->
         <p class="ui big header">{{ category.name }}</p>
 
-        <!-- add_task -->
+
+        <!-- sorting -->
+        <!--
+        <form action="/sorting/{{ category.id }}" method="post" style="display: inline;">
+            <select class="ui dropdown" onchange="this.form.submit()" name="value">
+                <option value="4" {% if category.sorting==4 %} selected {% endif %}>Сортировать по</option>
+                <option value="1" {% if category.sorting==1 %} selected {% endif %}>Приоритет</option>
+                <option value="2" {% if category.sorting==2 %} selected {% endif %}>Статус</option>
+                <option value="3" {% if category.sorting==3 %} selected {% endif %}>Алфавит</option>
+            </select>
+        </form>
+        -->
+
+
+        <!-- add task -->
         <form class="ui form" action="/add_task/{{ category.id }}" method="post">
             <div class="field">
                 <label>Новая задача</label>
@@ -27,17 +42,25 @@
         <!-- task -->
         <div class="ui segment">
 
+            <!-- title and description button -->
             <p class="ui big header">{{ task.title }} <span class="ui small basic button open-modal"
                     data-task-id="{{ task.id }}">Описание задачи</span>
             </p>
 
-            {% if task.status == False %}
-            <a class="ui gray button" href="/update/{{ task.id }}">▢</a>
-            {% else %}
-            <a class="ui green button" href="/update/{{ task.id }}">✔</a>
-            {% endif %}
 
-            <!-- task_description -->
+            <!-- status -->
+            <a href="/update/{{ task.id }}">
+
+                {% if task.status == False %}
+                <i class="ui big grey square outline icon"></i>
+                {% else %}
+                <i class="ui big green check square icon"></i>
+                {% endif %}
+
+            </a>
+
+
+            <!-- task description -->
             <div id="description-{{ task.id }}" class="modal">
                 <div class="modal-content">
                     <form class="ui form" action="/update_description/{{ task.id }}" method="post">
@@ -55,33 +78,41 @@
                 </div>
             </div>
 
-            <!-- delete_task -->
-            <a class="ui negative button" href="/delete_task/{{ task.id }}">Удалить</a>
 
             <!-- priority -->
-            <form class="ui form" action="/set_priority/{{ task.id }}" method="post">
+            <form action="/set_priority/{{ task.id }}" method="post" style="display: inline;">
                 <select class="ui dropdown" onchange="this.form.submit()" name="value">
-                    <option value="6" {% if task.priority == 6 %} selected {% endif %}>Приоритет</option>
-                    <option value="1" {% if task.priority == 1 %} selected {% endif %}>Lvl. 1</option>
-                    <option value="2" {% if task.priority == 2 %} selected {% endif %}>Lvl. 2</option>
-                    <option value="3" {% if task.priority == 3 %} selected {% endif %}>Lvl. 3</option>
-                    <option value="4" {% if task.priority == 4 %} selected {% endif %}>Lvl. 4</option>
-                    <option value="5" {% if task.priority == 5 %} selected {% endif %}>Lvl. 5</option>
+                    <option value="6" {% if task.priority==6 %} selected {% endif %}>Приоритет</option>
+                    <option value="1" {% if task.priority==1 %} selected {% endif %}>Lvl. 1</option>
+                    <option value="2" {% if task.priority==2 %} selected {% endif %}>Lvl. 2</option>
+                    <option value="3" {% if task.priority==3 %} selected {% endif %}>Lvl. 3</option>
+                    <option value="4" {% if task.priority==4 %} selected {% endif %}>Lvl. 4</option>
+                    <option value="5" {% if task.priority==5 %} selected {% endif %}>Lvl. 5</option>
                 </select>
             </form>
 
 
             <!-- deadline -->
             <div class="ui inverted calendar input left icon" id="example-{{ task.id }}" data-task-id="{{ task.id }}">
-                <i class="calendar icon"></i>
-                <input type="text" name="date" value="{% if task.deadline %}{{ task.deadline.strftime('%B %d, %Y %I:%M %p') }}{% endif %}" placeholder="Date/Time">
+                <i class="ui  calendar alternate outline icon"></i>
+                <input type="text" name="date"
+                    value="{% if task.deadline %}{{ task.deadline.strftime('%B %d, %Y %I:%M %p') }}{% endif %}"
+                    placeholder="Date/Time">
             </div>
+
+
+            <!-- delete task -->
+            <a href="/delete_task/{{ task.id }}" style="display: inline;">
+                <i class="ui big red trash alternate outline icon"></i>
+            </a>
+
         </div>
 
         {% endif %}
         {% endfor %}
 
-        <!-- delete_category -->
+
+        <!-- delete category -->
         <a class="ui negative button" href="/delete_category/{{ category.id }}" style="margin-top: 5px;">Удалить
             группу</a>
 
@@ -89,7 +120,8 @@
 
     {% endfor %}
 
-    <!-- add_category -->
+
+    <!-- add category -->
     <form class="ui form" action="/add_category" method="post">
         <div class="field">
             <label>Новая группа</label>
