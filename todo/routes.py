@@ -1,7 +1,9 @@
-from flask import Flask, request, render_template, url_for, redirect, jsonify
-from todo.models import db, Tasks, Category
-from sqlalchemy import func
 from datetime import datetime
+
+from flask import Flask, request, render_template, url_for, redirect, jsonify
+from sqlalchemy import func, desc
+
+from todo.models import db, Tasks, Category
 
 
 def create_app():
@@ -21,6 +23,21 @@ def home():
     category_list = Category.query.all()
     return render_template('todo/index.html', task_list=task_list, title='Главная страница',
                            category_list=category_list)
+
+
+@app.post('/sorting/<int:index>')
+def sorting(index):
+    sorting_value = request.form.get('param')
+    if sorting_value == 'skip':
+        return redirect(url_for('home'))
+    if sorting_value == 'title':
+        task_list = Tasks.query.order_by(sorting_value).all()
+    else:
+        task_list = Tasks.query.order_by(desc(sorting_value)).all()
+    category_list = Category.query.filter_by(id=index).all()
+    return render_template('todo/index.html', task_list=task_list, title='Главная страница',
+                    category_list=category_list)
+
 
 
 @app.post('/add_category')
