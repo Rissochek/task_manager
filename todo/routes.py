@@ -8,6 +8,7 @@ from todo.models import db, Tasks, Category
 
 def create_app():
     app = Flask(__name__)
+    app.secret_key = '12345'
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///app.db"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
@@ -25,19 +26,45 @@ def home():
                            category_list=category_list)
 
 
+def delete_tasks():
+    db.session.query(Tasks).delete()
+    db.session.commit()
+
+
+def write_tasks(task_list):
+    for idx, task in enumerate(task_list, start=1):
+        new_task = Tasks(id=idx, title=task.title, description=task.description, status=task.status,
+                         deadline=task.deadline, priority=task.priority, category_id=task.category_id)
+        db.session.add(new_task)
+    db.session.commit()
+
+
 @app.post('/sorting/<int:index>')
 def sorting(index):
     sorting_value = request.form.get('param')
+    category_list = Category.query.all()
+
     if sorting_value == 'skip':
         return redirect(url_for('home'))
-    if sorting_value == 'title':
-        task_list = Tasks.query.order_by(sorting_value).all()
-    else:
-        task_list = Tasks.query.order_by(desc(sorting_value)).all()
-    category_list = Category.query.filter_by(id=index).all()
-    return render_template('todo/index.html', task_list=task_list, title='Главная страница',
-                    category_list=category_list)
 
+    sorted_task_list = Tasks.query.filter_by(category_id=index).order_by(
+        Tasks.title if sorting_value == 'title' else desc(sorting_value)).all()
+
+    task_list = sorted_task_list
+
+    for category in category_list:
+        if category.id != index:
+            temp_tasks = Tasks.query.filter_by(category_id=category.id).all()
+            task_list.extend(temp_tasks)
+
+    delete_tasks()
+    write_tasks(task_list)
+
+    category = Category.query.filter_by(id=index).first()
+    category.sorting = sorting_value
+    db.session.commit()
+
+    return redirect(url_for('home'))
 
 
 @app.post('/add_category')
@@ -100,11 +127,10 @@ def delete_category(category_id):
 @app.post('/add_calendar')
 def add_calendar():
     try:
-        data = request.json  # Получаем данные из JSON тела запроса
-        print("Received data:", data)  # Выводим данные для отладки
+        data = request.json
+        print("Received data:", data)
         calendar_date = data['date']
         task_id = data['taskId']
-        # Преобразовать строку в объект datetime
         deadline_datetime = datetime.strptime(calendar_date, '%B %d, %Y %I:%M %p')
 
         task = Tasks.query.filter_by(id=task_id).first()
@@ -112,7 +138,7 @@ def add_calendar():
         db.session.commit()
         return redirect(url_for('home'))
     except Exception as e:
-        print("Error:", e)  # Выводим ошибку для отладки
+        print("Error:", e)
         return jsonify({'error': str(e)}), 500
 
 

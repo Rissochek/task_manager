@@ -16,14 +16,13 @@
 
         <!-- sorting -->
         <form class="ui form" action="/sorting/{{ category.id }}" method="post" style="display: inline-flex;">
-            <select class="ui dropdown" onchange="this.form.submit()" name="param">
-                <option value="skip">Сортировать по</option>
-                <option value="priority">Приоритету</option>
-                <option value="status">Статусу</option>
-                <option value="title">Алфавиту</option>
-            </select>
+        <select class="ui dropdown" name="param" onchange="this.form.submit()">
+            <option value="skip" {% if category.sorting =='skip' %} selected {% endif %}>Сортировать по</option>
+            <option value="priority" {% if category.sorting =='priority' %} selected {% endif %}>Приоритету</option>
+            <option value="status" {% if category.sorting =='status' %} selected {% endif %}>Статусу</option>
+            <option value="title" {% if category.sorting =='title' %} selected {% endif %}>Алфавиту</option>
+        </select>
         </form>
-
 
         <!-- add task -->
         <form class="ui form" action="/add_task/{{ category.id }}" method="post">

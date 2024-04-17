@@ -15,7 +15,7 @@ class Category(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-
+    sorting = Column(String)
 
 class Tasks(db.Model):
     __tablename__ = 'tasks'
