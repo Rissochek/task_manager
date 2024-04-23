@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="ui container" style="margin-top: 50px;">
-    <h1 class="ui center aligned header">Huello</h1>
+    <h1 class="ui center aligned header">Hello!</h1>
 
     {% for category in category_list %}
 
@@ -24,6 +24,15 @@
         </select>
         </form>
 
+        <!-- filtering -->
+        <form class="ui form" action="/filtering/{{ category.id }}" method="post" style="display: inline-flex;">
+        <select class="ui dropdown" name="param" onchange="this.form.submit()">
+            <option value="skip" {% if category.filtering =='skip' %} selected {% endif %}>Фильтровать по</option>
+            <option value="1" {% if category.filtering =='1' %} selected {% endif %}>Выполненно</option>
+            <option value="0" {% if category.filtering =='0' %} selected {% endif %}>Не выполненно</option>
+        </select>
+        </form>
+
         <!-- add task -->
         <form class="ui form" action="/add_task/{{ category.id }}" method="post">
             <div class="field">
@@ -39,10 +48,19 @@
         <!-- task -->
         <div class="ui segment">
 
-            <!-- title, edit and description button -->
-            <a href="/edit_task/{{ task.id }}">
+             <!-- title, edit and description button -->
+            <a href="/edit_task/{{ task.id }}" id="editIcon">
                 <i class="ui grey pencil alternate icon"></i>
             </a>
+
+            <div id="editForm" style="display: none;">
+                <form class="ui form" action="/edit_task/{{ task.id }}" method="post">
+                    <div class="field">
+                        <input type="text" name="title" placeholder="Введите название задачи" required>
+                    </div>
+                    <button class="ui black button" type="submit">Изменить</button>
+                </form>
+            </div>
             <a class="ui big header">{{ task.title }}</a>
             <a class="ui small basic button open-modal" data-task-id="{{ task.id }}">Описание задачи</a>
 

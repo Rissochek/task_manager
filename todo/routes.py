@@ -20,8 +20,16 @@ app = create_app()
 
 @app.get('/')
 def home():
-    task_list = Tasks.query.all()
+    task_list = list()
     category_list = Category.query.all()
+    for category in category_list:
+        if category.filtering != 'skip':
+            temp_tasks = Tasks.query.filter_by(category_id=category.id, status=int(category.filtering)).all()
+            task_list.extend(temp_tasks)
+        else:
+            temp_tasks = Tasks.query.filter_by(category_id=category.id).all()
+            task_list.extend(temp_tasks)
+    db.session.commit()
     return render_template('todo/index.html', task_list=task_list, title='Главная страница',
                            category_list=category_list)
 
@@ -45,6 +53,9 @@ def sorting(index):
     category_list = Category.query.all()
 
     if sorting_value == 'skip':
+        category = Category.query.filter_by(id=index).first()
+        category.sorting = sorting_value
+        db.session.commit()
         return redirect(url_for('home'))
 
     sorted_task_list = Tasks.query.filter_by(category_id=index).order_by(
@@ -65,6 +76,36 @@ def sorting(index):
     db.session.commit()
 
     return redirect(url_for('home'))
+
+
+@app.post('/filtering/<int:index>')
+def filtering(index):
+    filter_value = request.form.get('param')
+    category_list = Category.query.all()
+
+    if filter_value == 'skip':
+        category = Category.query.filter_by(id=index).first()
+        category.filtering = filter_value
+        db.session.commit()
+        return redirect(url_for('home'))
+
+    filtered_task_list = Tasks.query.filter_by(category_id=index, status=int(filter_value)).all()
+    task_list = filtered_task_list
+
+    for category in category_list:
+        if category.filtering != 'skip' and category.id != index:
+            temp_tasks = Tasks.query.filter_by(category_id=category.id, status=int(category.filtering)).all()
+            task_list.extend(temp_tasks)
+        elif category.id != index:
+            temp_tasks = Tasks.query.filter_by(category_id=category.id).all()
+            task_list.extend(temp_tasks)
+
+    category = Category.query.filter_by(id=index).first()
+    category.filtering = filter_value
+    db.session.commit()
+
+    return render_template('todo/index.html', task_list=task_list, title='Главная страница',
+                           category_list=category_list)
 
 
 @app.post('/add_category')
@@ -88,6 +129,14 @@ def add_task(index):
     db.session.commit()
     return redirect(url_for('home'))
 
+
+@app.post('/edit_task/<int:index>')
+def edit_task(index):
+    title = request.form.get('title')
+    task = Tasks.query.filter_by(id=index).first()
+    task.title = title
+    db.session.commit()
+    return redirect(url_for('home'))
 
 @app.post('/update_description/<int:task_id>')
 def update_description(task_id):

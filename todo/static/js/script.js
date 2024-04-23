@@ -37,3 +37,11 @@ $(document).ready(function(){
 });
 $('.ui.dropdown').dropdown();
 
+    document.getElementById('editIcon').addEventListener('click', function(event) {
+        event.preventDefault(); // Предотвращаем стандартное поведение ссылки
+
+        // Отображаем форму для ввода
+        document.getElementById('editForm').style.display = 'block';
+
+        // Если нужно, можно добавить дополнительный код для загрузки данных или другой логики
+    });
