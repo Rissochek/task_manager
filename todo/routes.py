@@ -4,15 +4,16 @@ from flask import Flask, request, render_template, url_for, redirect, jsonify
 from sqlalchemy import func, desc
 
 from todo.models import db, Tasks, Category
+from todo.gigachat import get_chat_completion, giga_token
 
 
 def create_app():
-    app = Flask(__name__)
-    app.secret_key = '12345'
-    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///app.db"
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    db.init_app(app)
-    return app
+    task_manager = Flask(__name__)
+    task_manager.secret_key = '12345'
+    task_manager.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///app.db"
+    task_manager.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(task_manager)
+    return task_manager
 
 
 app = create_app()
@@ -137,6 +138,8 @@ def edit_task(index):
     task.title = title
     db.session.commit()
     return redirect(url_for('home'))
+
+
 @app.post('/edit_category/<int:index>')
 def edit_category(index):
     title = request.form.get('title')
@@ -209,3 +212,15 @@ def set_priority(task_id):
         return redirect(url_for('home'))
     else:
         return 'Task not found', 404
+
+
+@app.get('/generate_description/<int:task_id>')
+def generate_description(task_id):
+    task = Tasks.query.filter_by(id=task_id).first()
+    description = get_chat_completion(giga_token,
+                                      user_message=f'Напиши опиcание задачи по заголовку. Загоолвок: {task.title}. \\'
+                                                   f'Сделай предложение законченным, размером 50 слов.')
+    description.json()
+    task.description = description.json()['choices'][0]['message']['content']
+    db.session.commit()
+    return redirect(url_for('home'))

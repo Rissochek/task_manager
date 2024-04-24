@@ -16,7 +16,7 @@
         <div class="editCategoryForm" style="display: none;">
             <form class="ui form" action="/edit_category/{{ category.id }}" method="post">
                 <div class="field">
-                    <input type="text" name="title" placeholder="Введите название категории" required>
+                    <input type="text" name="title"  placeholder="Введите название категории" value="{{ category.name }}" required>
                 </div>
                 <button class="ui black button" type="submit">Изменить</button>
             </form>
@@ -67,7 +67,7 @@
             <div id="editForm" style="display: none;">
                 <form class="ui form" action="/edit_task/{{ task.id }}" method="post">
                     <div class="field">
-                        <input type="text" name="title" placeholder="Введите название задачи" required>
+                        <input type="text" name="title" placeholder="Введите название задачи" value="{{ task.title }}" required>
                     </div>
                     <button class="ui black button" type="submit">Изменить</button>
                 </form>
@@ -106,6 +106,7 @@
                         </div>
                         <button class="ui black button" type="submit">Подтвердить</button>
                     </form>
+                    <a class="ui basic green button" data-task-id="{{ task.id }}" href="/generate_description/{{ task.id }}">Сгененировать описание</a>
                 </div>
             </div>
 
@@ -155,6 +156,7 @@
     <!-- add category -->
     <form class="ui form" action="/add_category" method="post">
         <div class="field">
+
             <label>Новая группа</label>
             <input type="text" name="name" placeholder="Введите название группы" required>
         </div>

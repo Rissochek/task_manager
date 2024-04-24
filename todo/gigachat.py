@@ -6,9 +6,9 @@ import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-client_id = ""
-secret = ""
-auth = ""
+client_id = "3aada6aa-910c-4bb1-8937-4bcad901e8b2"
+secret = "a15f81b2-471f-47d2-928f-1fd4037f6e86"
+auth = "M2FhZGE2YWEtOTEwYy00YmIxLTg5MzctNGJjYWQ5MDFlOGIyOmExNWY4MWIyLTQ3MWYtNDdkMi05MjhmLTFmZDQwMzdmNmU4Ng=="
 
 credentials = f"{client_id}:{secret}"
 encoded_credentials = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
@@ -58,7 +58,7 @@ def get_chat_completion(auth_token, user_message):
         "top_p": 0.1,
         "n": 1,
         "stream": False,
-        "max_tokens": 512,
+        "max_tokens": 50,
         "repetition_penalty": 1,
         "update_interval": 0
     })
@@ -75,8 +75,3 @@ def get_chat_completion(auth_token, user_message):
     except requests.RequestException as e:
         print(f"Произошла ошибка: {str(e)}")
         return -1
-
-
-answer = get_chat_completion(giga_token, user_message='')
-answer.json()
-print(answer.json()['choices'][0]['message']['content'])
