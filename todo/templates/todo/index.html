@@ -22,9 +22,8 @@
             </form>
         </div>
         <!-- name -->
-        <p class="ui big header">{{ category.name }}</p>
-
-
+        <a class="ui big header">{{ category.name }}</a>
+        <br>
         <!-- sorting -->
         <form class="ui form" action="/sorting/{{ category.id }}" method="post" style="display: inline-flex;">
         <select class="ui dropdown" name="param" onchange="this.form.submit()">
