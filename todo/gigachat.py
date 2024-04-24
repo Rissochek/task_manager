@@ -2,7 +2,10 @@ import requests
 import json
 import base64
 import uuid
+import urllib3
 
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  # Игнорирование предупреждения "InsecureRequestWarning"
 
 client_id = ""  # индивидуально
 secret = ""  # индивидуально
