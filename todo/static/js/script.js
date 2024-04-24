@@ -37,11 +37,49 @@ $(document).ready(function(){
 });
 $('.ui.dropdown').dropdown();
 
-    document.getElementById('editIcon').addEventListener('click', function(event) {
+// Получаем все элементы с классом 'editIcon'
+var editIcons = document.querySelectorAll('.editIcon');
+
+// Проходимся по каждому элементу и навешиваем обработчик события
+editIcons.forEach(function(icon) {
+    icon.addEventListener('click', function(event) {
         event.preventDefault(); // Предотвращаем стандартное поведение ссылки
 
-        // Отображаем форму для ввода
-        document.getElementById('editForm').style.display = 'block';
+        // Получаем форму, связанную с иконкой
+        var editForm = icon.nextElementSibling;
 
-        // Если нужно, можно добавить дополнительный код для загрузки данных или другой логики
+        // Отображаем или скрываем форму в зависимости от её текущего состояния
+        if (editForm.style.display === 'block') {
+            editForm.style.display = 'none';
+        } else {
+            // Скрываем все открытые формы перед отображением текущей
+            document.querySelectorAll('.editForm').forEach(function(form) {
+                form.style.display = 'none';
+            });
+            editForm.style.display = 'block';
+        }
     });
+});
+
+var editIcons = document.querySelectorAll('.editCategoryIcon');
+
+// Проходимся по каждому элементу и навешиваем обработчик события
+editIcons.forEach(function(icon) {
+    icon.addEventListener('click', function(event) {
+        event.preventDefault(); // Предотвращаем стандартное поведение ссылки
+
+        // Получаем форму, связанную с иконкой
+        var editForm = icon.nextElementSibling;
+
+        // Отображаем или скрываем форму в зависимости от её текущего состояния
+        if (editForm.style.display === 'block') {
+            editForm.style.display = 'none';
+        } else {
+            // Скрываем все открытые формы перед отображением текущей
+            document.querySelectorAll('.editCategoryForm').forEach(function(form) {
+                form.style.display = 'none';
+            });
+            editForm.style.display = 'block';
+        }
+    });
+});

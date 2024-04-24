@@ -137,6 +137,14 @@ def edit_task(index):
     task.title = title
     db.session.commit()
     return redirect(url_for('home'))
+@app.post('/edit_category/<int:index>')
+def edit_category(index):
+    title = request.form.get('title')
+    category = Category.query.filter_by(id=index).first()
+    category.name = title
+    db.session.commit()
+    return redirect(url_for('home'))
+
 
 @app.post('/update_description/<int:task_id>')
 def update_description(task_id):

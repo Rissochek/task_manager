@@ -9,7 +9,18 @@
 
     <!-- category -->
     <div class="ui segment">
+        <a href="/edit_category/{{ category.id }}" class="editCategoryIcon">
+            <i class="ui grey pencil alternate icon"></i>
+        </a>
 
+        <div class="editCategoryForm" style="display: none;">
+            <form class="ui form" action="/edit_category/{{ category.id }}" method="post">
+                <div class="field">
+                    <input type="text" name="title" placeholder="Введите название категории" required>
+                </div>
+                <button class="ui black button" type="submit">Изменить</button>
+            </form>
+        </div>
         <!-- name -->
         <p class="ui big header">{{ category.name }}</p>
 
@@ -49,7 +60,7 @@
         <div class="ui segment">
 
              <!-- title, edit and description button -->
-            <a href="/edit_task/{{ task.id }}" id="editIcon">
+            <a href="/edit_task/{{ task.id }}" class="editIcon">
                 <i class="ui grey pencil alternate icon"></i>
             </a>
 
