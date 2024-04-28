@@ -11,21 +11,42 @@ db = SQLAlchemy()
 
 
 class Category(db.Model):
+    """
+    Класс, представляющий категорию.
+
+    Attributes:
+        id (int): Уникальный идентификатор категории.
+        name (str): Название категории.
+        sorting (str): Метод сортировки для категории.
+        filtering (str): Метод фильтрации для категории.
+    """
     __tablename__ = 'category'
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    sorting = Column(String)
-    filtering = Column(String, default='skip')
+    id: int = Column(Integer, primary_key=True)
+    name: str = Column(String)
+    sorting: str = Column(String)
+    filtering: str = Column(String, default='skip')
 
 
 class Tasks(db.Model):
+    """
+    Класс, представляющий задачу.
+
+    Attributes:
+        id (int): Уникальный идентификатор задачи.
+        title (str): Заголовок задачи.
+        description (str): Описание задачи.
+        status (bool): Статус задачи (True, если выполнена, False в противном случае).
+        deadline (DateTime): Срок выполнения задачи.
+        priority (int): Приоритет задачи.
+        category_id (int): ID категории, к которой принадлежит задача.
+    """
     __tablename__ = 'tasks'
 
-    id = Column(Integer, primary_key=True)
-    title = Column(String)
-    description = Column(String)
-    status = Column(Boolean)
-    deadline = Column(DateTime)
-    priority = Column(Integer, default=6)
-    category_id = Column(Integer, ForeignKey('category.id'))
+    id: int = Column(Integer, primary_key=True)
+    title: str = Column(String)
+    description: str = Column(String)
+    status: bool = Column(Boolean)
+    deadline: DateTime = Column(DateTime)
+    priority: int = Column(Integer, default=6)
+    category_id: int = Column(Integer, ForeignKey('category.id'))
