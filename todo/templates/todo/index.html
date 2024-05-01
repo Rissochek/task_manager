@@ -9,39 +9,40 @@
 
     <!-- category -->
     <div class="ui segment">
-        <a href="/edit_category/{{ category.id }}" class="editCategoryIcon">
-            <i class="ui grey pencil alternate icon"></i>
-        </a>
 
-        <div class="editCategoryForm" style="display: none;">
-            <form class="ui form" action="/edit_category/{{ category.id }}" method="post">
-                <div class="field">
-                    <input type="text" name="title"  placeholder="Введите название категории" value="{{ category.name }}" required>
-                </div>
-                <button class="ui black button" type="submit">Изменить</button>
-            </form>
-        </div>
-        <!-- name -->
-        <a class="ui big header">{{ category.name }}</a>
+        <!-- name and edit -->
+        <span href="/edit_category/{{ category.id }}" class="edit_category" data-category-id="{{ category.id }}">
+            <i class="ui grey pencil alternate icon"></i>
+        </span>
+        <form class="ui input edit_category_form" action="/edit_category/{{ category.id }}" method="post">
+            <span class="ui big header" id="category_name_{{ category.id }}">{{ category.name }}</span>
+            <button type="submit" class="ui black button" id="edit_category_save_button_{{ category.id }}"
+                style="display: none;">Сохранить</button>
+        </form>
+
         <br>
+
+
         <!-- sorting -->
         <form class="ui form" action="/sorting/{{ category.id }}" method="post" style="display: inline-flex;">
-        <select class="ui dropdown" name="param" onchange="this.form.submit()">
-            <option value="skip" {% if category.sorting =='skip' %} selected {% endif %}>Сортировать по</option>
-            <option value="priority" {% if category.sorting =='priority' %} selected {% endif %}>Приоритету</option>
-            <option value="status" {% if category.sorting =='status' %} selected {% endif %}>Статусу</option>
-            <option value="title" {% if category.sorting =='title' %} selected {% endif %}>Алфавиту</option>
-        </select>
+            <select class="ui dropdown" name="param" onchange="this.form.submit()">
+                <option value="skip" {% if category.sorting=='skip' %} selected {% endif %}>Сортировать по</option>
+                <option value="priority" {% if category.sorting=='priority' %} selected {% endif %}>Приоритету</option>
+                <option value="status" {% if category.sorting=='status' %} selected {% endif %}>Статусу</option>
+                <option value="title" {% if category.sorting=='title' %} selected {% endif %}>Алфавиту</option>
+            </select>
         </form>
+
 
         <!-- filtering -->
         <form class="ui form" action="/filtering/{{ category.id }}" method="post" style="display: inline-flex;">
-        <select class="ui dropdown" name="param" onchange="this.form.submit()">
-            <option value="skip" {% if category.filtering =='skip' %} selected {% endif %}>Фильтровать по</option>
-            <option value="1" {% if category.filtering =='1' %} selected {% endif %}>Выполненно</option>
-            <option value="0" {% if category.filtering =='0' %} selected {% endif %}>Не выполненно</option>
-        </select>
+            <select class="ui dropdown" name="param" onchange="this.form.submit()">
+                <option value="skip" {% if category.filtering=='skip' %} selected {% endif %}>Фильтровать по</option>
+                <option value="1" {% if category.filtering=='1' %} selected {% endif %}>Выполненно</option>
+                <option value="0" {% if category.filtering=='0' %} selected {% endif %}>Не выполненно</option>
+            </select>
         </form>
+
 
         <!-- add task -->
         <form class="ui form" action="/add_task/{{ category.id }}" method="post">
@@ -52,28 +53,27 @@
             <button class="ui black button" type="submit">Добавить</button>
         </form>
 
+
         {% for task in task_list %}
         {% if task.category_id == category.id %}
+
 
         <!-- task -->
         <div class="ui segment">
 
-             <!-- title, edit and description button -->
-            <a href="/edit_task/{{ task.id }}" class="editIcon">
+            <!-- title and edit -->
+            <span href="/edit_task/{{ task.id }}" class="edit_task" data-task-id="{{ task.id }}">
                 <i class="ui grey pencil alternate icon"></i>
-            </a>
+            </span>
+            <form class="ui input edit_task_form" action="/edit_task/{{ task.id }}" method="post">
+                <span class="ui big header" id="task_title_{{ task.id }}">{{ task.title }}</span>
+                <button type="submit" class="ui black button" id="edit_task_save_button_{{ task.id }}"
+                    style="display: none;">Сохранить</button>
+            </form>
 
-            <div id="editForm" style="display: none;">
-                <form class="ui form" action="/edit_task/{{ task.id }}" method="post">
-                    <div class="field">
-                        <input type="text" name="title" placeholder="Введите название задачи" value="{{ task.title }}" required>
-                    </div>
-                    <button class="ui black button" type="submit">Изменить</button>
-                </form>
-            </div>
-            <a class="ui big header">{{ task.title }}</a>
+
+            <!-- description button -->
             <a class="ui small basic button open-modal" data-task-id="{{ task.id }}">Описание задачи</a>
-
 
             <br>
 
@@ -90,7 +90,7 @@
             </a>
 
 
-            <!-- task description -->
+            <!-- task description + gigachat -->
             <div id="description-{{ task.id }}" class="modal">
                 <div class="modal-content">
                     <form class="ui form" action="/update_description/{{ task.id }}" method="post">
@@ -104,8 +104,10 @@
 
                         </div>
                         <button class="ui black button" type="submit">Подтвердить</button>
+
+                        <a class="ui green button" data-task-id="{{ task.id }}"
+                            href="/generate_description/{{ task.id }}" style="float: right;">Сгененировать</a>
                     </form>
-                    <a class="ui basic green button" data-task-id="{{ task.id }}" href="/generate_description/{{ task.id }}">Сгененировать описание</a>
                 </div>
             </div>
 
@@ -138,6 +140,7 @@
             </a>
 
         </div>
+
 
         {% endif %}
         {% endfor %}

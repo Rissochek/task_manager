@@ -1,10 +1,10 @@
 
-$(document).ready(function(){
-    $('[id^="example-"]').each(function() {
+$(document).ready(function () {
+    $('[id^="example-"]').each(function () {
         var taskId = $(this).data('task-id');
         $(this).calendar({
-            onChange: function(date, text, mode) {
-               $.ajax({
+            onChange: function (date, text, mode) {
+                $.ajax({
                     type: "POST",
                     url: "/add_calendar",
                     contentType: "application/json",
@@ -16,53 +16,59 @@ $(document).ready(function(){
 });
 $('.ui.dropdown').dropdown();
 
-// Получаем все элементы с классом 'editIcon'
-var editIcons = document.querySelectorAll('.editIcon');
+document.addEventListener("DOMContentLoaded", function () {
+    var editIcons = document.querySelectorAll(".edit_task");
 
-// Проходимся по каждому элементу и навешиваем обработчик события
-editIcons.forEach(function(icon) {
-    icon.addEventListener('click', function(event) {
-        event.preventDefault(); // Предотвращаем стандартное поведение ссылки
+    editIcons.forEach(function (icon) {
+        icon.addEventListener("click", function () {
+            var task_id = icon.getAttribute("data-task-id");
+            var title = document.getElementById("task_title_" + task_id);
+            var save_button = document.getElementById("edit_task_save_button_" + task_id);
 
-        // Получаем форму, связанную с иконкой
-        var editForm = icon.nextElementSibling;
+            var inputField = document.createElement("input");
+            inputField.setAttribute("type", "text");
+            inputField.setAttribute("value", title.textContent);
+            inputField.setAttribute("name", "title");
+            inputField.setAttribute("class", "ui small header");
+            inputField.required = true;
+            title.parentNode.replaceChild(inputField, title);
 
-        // Отображаем или скрываем форму в зависимости от её текущего состояния
-        if (editForm.style.display === 'block') {
-            editForm.style.display = 'none';
-        } else {
-            // Скрываем все открытые формы перед отображением текущей
-            document.querySelectorAll('.editForm').forEach(function(form) {
-                form.style.display = 'none';
-            });
-            editForm.style.display = 'block';
-        }
+
+            save_button.style.display = "inline-block";
+
+
+            inputField.focus();
+        });
     });
 });
 
-var editIcons = document.querySelectorAll('.editCategoryIcon');
 
-// Проходимся по каждому элементу и навешиваем обработчик события
-editIcons.forEach(function(icon) {
-    icon.addEventListener('click', function(event) {
-        event.preventDefault(); // Предотвращаем стандартное поведение ссылки
 
-        // Получаем форму, связанную с иконкой
-        var editForm = icon.nextElementSibling;
+document.addEventListener("DOMContentLoaded", function () {
+    var editIcons = document.querySelectorAll(".edit_category");
 
-        // Отображаем или скрываем форму в зависимости от её текущего состояния
-        if (editForm.style.display === 'block') {
-            editForm.style.display = 'none';
-        } else {
-            // Скрываем все открытые формы перед отображением текущей
-            document.querySelectorAll('.editCategoryForm').forEach(function(form) {
-                form.style.display = 'none';
-            });
-            editForm.style.display = 'block';
-        }
+    editIcons.forEach(function (icon) {
+        icon.addEventListener("click", function () {
+            var category_id = icon.getAttribute("data-category-id");
+            var title = document.getElementById("category_name_" + category_id);
+            var save_button = document.getElementById("edit_category_save_button_" + category_id);
+
+            var inputField = document.createElement("input");
+            inputField.setAttribute("type", "text");
+            inputField.setAttribute("value", title.textContent);
+            inputField.setAttribute("name", "title");
+            inputField.setAttribute("class", "ui small header");
+            inputField.required = true;
+            title.parentNode.replaceChild(inputField, title);
+
+
+            save_button.style.display = "inline-block";
+
+
+            inputField.focus();
+        });
     });
 });
-
 
 
 let isModalOpen = false;
@@ -78,7 +84,7 @@ function closeModal() {
 }
 
 // Проверка состояния модального окна перед обновлением страницы
-window.addEventListener('beforeunload', function(event) {
+window.addEventListener('beforeunload', function (event) {
     if (isModalOpen) {
         // Отмена события закрытия окна
         event.preventDefault();
