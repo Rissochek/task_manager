@@ -31,8 +31,7 @@ def get_token(auth_token, scope='GIGACHAT_API_PERS'):
     }
 
     try:
-        response = requests.post(url, headers=headers, data=payload, verify=False)
-        return response
+        return requests.post(url, headers=headers, data=payload, verify=False)
     except requests.RequestException as e:
         print(f"Ошибка: {str(e)}")
         return -1
@@ -70,8 +69,7 @@ def get_chat_completion(auth_token, user_message):
     }
 
     try:
-        response = requests.request("POST", url, headers=headers, data=payload, verify=False)
-        return response
+        return requests.request("POST", url, headers=headers, data=payload, verify=False)
     except requests.RequestException as e:
         print(f"Произошла ошибка: {str(e)}")
         return -1

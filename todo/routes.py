@@ -38,7 +38,7 @@ def home() -> str:
     task_list: List[Tasks] = []
     category_list: List[Category] = Category.query.all()
     for category in category_list:
-        if category.filtering != 'skip':
+        if category.filtering != 'skip' and isinstance(category.filtering, str):
             temp_tasks: List[Tasks] = Tasks.query.filter_by(category_id=category.id,
                                                             status=int(category.filtering)).all()
             task_list.extend(temp_tasks)
@@ -136,7 +136,7 @@ def filtering(index: int) -> Union[str, 'Response']:
     task_list: List[Tasks] = filtered_task_list
 
     for category in category_list:
-        if category.filtering != 'skip' and category.id != index:
+        if category.filtering != 'skip' and category.id != index and isinstance(category.filtering, str):
             temp_tasks: List[Tasks] = Tasks.query.filter_by(category_id=category.id,
                                                             status=int(category.filtering)).all()
             task_list.extend(temp_tasks)
@@ -243,8 +243,7 @@ def update_description(task_id: int) -> 'Response':
         db.session.commit()
         return make_response(redirect(url_for('home')))
     else:
-        response = make_response('Задача не найдена', 404)
-        return response
+        return make_response('Задача не найдена', 404)
 
 
 @app.get('/update/<int:task_id>')
@@ -343,8 +342,7 @@ def set_priority(task_id: int) -> 'Response':
         db.session.commit()
         return make_response(redirect(url_for('home')))
     else:
-        response = make_response('Задача не найдена', 404)
-        return response
+        return make_response('Задача не найдена', 404)
 
 
 @app.get('/generate_description/<int:task_id>')
@@ -368,5 +366,4 @@ def generate_description(task_id: int) -> 'Response':
         db.session.commit()
         return make_response(redirect(url_for('home')))
     else:
-        response = make_response('Задача не найдена', 404)
-        return response
+        return make_response('Задача не найдена', 404)
