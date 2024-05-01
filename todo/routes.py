@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Union
 
-from flask import Flask, request, render_template, url_for, redirect, jsonify, Response
+from flask import Flask, request, render_template, url_for, redirect, jsonify, Response, make_response
 from sqlalchemy import func, desc
 
 from todo.models import db, Tasks, Category
@@ -83,14 +83,14 @@ def sorting(index: int) -> Union[str, 'Response']:
     Returns:
         Union[str, Response]: Редирект на главную страницу.
     """
-    sorting_value: str = request.form.get('param')
+    sorting_value: str = request.form.get('param') or ''
     category_list: List[Category] = Category.query.all()
 
     if sorting_value == 'skip':
         category = Category.query.filter_by(id=index).first()
         category.sorting = sorting_value
         db.session.commit()
-        return redirect(url_for('home'))
+        return make_response(redirect(url_for('home')))
 
     sorted_task_list: List[Tasks] = Tasks.query.filter_by(category_id=index).order_by(
         Tasks.title if sorting_value == 'title' else desc(sorting_value)).all()
@@ -109,7 +109,7 @@ def sorting(index: int) -> Union[str, 'Response']:
     category.sorting = sorting_value
     db.session.commit()
 
-    return redirect(url_for('home'))
+    return make_response(redirect(url_for('home')))
 
 
 @app.route('/filtering/<int:index>', methods=['POST'])
@@ -123,14 +123,14 @@ def filtering(index: int) -> Union[str, 'Response']:
     Returns:
         Union[str, Response]: HTML-страница с отфильтрованными задачами или редирект на главную страницу.
     """
-    filter_value: str = request.form.get('param')
+    filter_value: str = request.form.get('param') or ''
     category_list: List[Category] = Category.query.all()
 
     if filter_value == 'skip':
         category = Category.query.filter_by(id=index).first()
         category.filtering = filter_value
         db.session.commit()
-        return redirect(url_for('home'))
+        return make_response(redirect(url_for('home')))
 
     filtered_task_list: List[Tasks] = Tasks.query.filter_by(category_id=index, status=int(filter_value)).all()
     task_list: List[Tasks] = filtered_task_list
@@ -148,19 +148,19 @@ def filtering(index: int) -> Union[str, 'Response']:
     category.filtering = filter_value
     db.session.commit()
 
-    return render_template('todo/index.html', task_list=task_list, title='Главная страница',
-                           category_list=category_list)
+    return make_response(render_template('todo/index.html', task_list=task_list, title='Главная страница',
+                                         category_list=category_list))
 
 
 @app.post('/add_category')
-def add_category():
+def add_category() -> 'Response':
     """
     Добавляет новую категорию.
 
     Returns:
-        Redirect: Перенаправляет на главную страницу.
+        Response: Перенаправляет на главную страницу.
     """
-    name: str = request.form.get('name')
+    name: str = request.form.get('name') or ''
     max_id: int = db.session.query(func.max(Category.id)).scalar()
     if max_id is not None:
         new_category = Category(name=name, id=max_id + 1)
@@ -168,7 +168,7 @@ def add_category():
         new_category = Category(name=name, id=1)
     db.session.add(new_category)
     db.session.commit()
-    return redirect(url_for('home'))
+    return make_response(redirect(url_for('home')))
 
 
 @app.post('/add_task/<int:index>')
@@ -182,7 +182,7 @@ def add_task(index: int):
     Returns:
         Redirect: Перенаправляет на главную страницу.
     """
-    title: str = request.form.get('title')
+    title: str = request.form.get('title') or ''
     new_task = Tasks(title=title, status=False, category_id=index)
     db.session.add(new_task)
     db.session.commit()
@@ -200,7 +200,7 @@ def edit_task(index: int):
     Returns:
         Redirect: Перенаправляет на главную страницу.
     """
-    title: str = request.form.get('title')
+    title: str = request.form.get('title') or ''
     task = Tasks.query.filter_by(id=index).first()
     task.title = title
     db.session.commit()
@@ -218,7 +218,7 @@ def edit_category(index: int):
     Returns:
         Redirect: Перенаправляет на главную страницу.
     """
-    title: str = request.form.get('title')
+    title: str = request.form.get('title') or ''
     category = Category.query.filter_by(id=index).first()
     category.name = title
     db.session.commit()
@@ -226,7 +226,7 @@ def edit_category(index: int):
 
 
 @app.post('/update_description/<int:task_id>')
-def update_description(task_id: int):
+def update_description(task_id: int) -> 'Response':
     """
     Обновляет описание задачи.
 
@@ -234,13 +234,17 @@ def update_description(task_id: int):
         task_id (int): ID задачи для обновления.
 
     Returns:
-        Redirect: Перенаправляет на главную страницу.
+        Response: Перенаправляет на главную страницу.
     """
     task = Tasks.query.filter_by(id=task_id).first()
-    description: str = request.form.get('description')
-    task.description = description
-    db.session.commit()
-    return redirect(url_for('home'))
+    description: str = request.form.get('description') or ''
+    if task:
+        task.description = description
+        db.session.commit()
+        return make_response(redirect(url_for('home')))
+    else:
+        response = make_response('Задача не найдена', 404)
+        return response
 
 
 @app.get('/update/<int:task_id>')
@@ -321,7 +325,7 @@ def add_calendar():
 
 
 @app.post('/set_priority/<int:task_id>')
-def set_priority(task_id: int):
+def set_priority(task_id: int) -> 'Response':
     """
     Устанавливает приоритет задачи.
 
@@ -329,21 +333,22 @@ def set_priority(task_id: int):
         task_id (int): ID задачи для установки приоритета.
 
     Returns:
-        Redirect: Перенаправляет на главную страницу в случае успеха, в противном случае возвращает
-        'Задача не найдена' и код состояния 404.
+        Response: Перенаправляет на главную страницу в случае успеха, в противном случае возвращает
+        'Задача не найдена'.
     """
     priority: int = int(request.form['value'])
     task = Tasks.query.filter_by(id=task_id).first()
     if task:
         task.priority = priority
         db.session.commit()
-        return redirect(url_for('home'))
+        return make_response(redirect(url_for('home')))
     else:
-        return 'Задача не найдена', 404
+        response = make_response('Задача не найдена', 404)
+        return response
 
 
 @app.get('/generate_description/<int:task_id>')
-def generate_description(task_id: int):
+def generate_description(task_id: int) -> 'Response':
     """
     Генерирует описание задачи с помощью модели искусственного интеллекта.
 
@@ -351,13 +356,17 @@ def generate_description(task_id: int):
         task_id (int): ID задачи для генерации описания.
 
     Returns:
-        Redirect: Перенаправляет на главную страницу.
+        Response: Перенаправляет на главную страницу.
     """
     task = Tasks.query.filter_by(id=task_id).first()
-    description = get_chat_completion(giga_token,
-                                      user_message=f'Напиши опиcание задачи по заголовку. Заголовок: {task.title}. \\'
-                                                   f'Сделай предложение законченным, размером 50 слов.')
-    description.json()
-    task.description = description.json()['choices'][0]['message']['content']
-    db.session.commit()
-    return redirect(url_for('home'))
+    if task:
+        description = get_chat_completion(giga_token,
+                                          user_message=f'Напиши опиcание задачи по заголовку. Заголовок: {task.title}.'
+                                                       f'Сделай предложение законченным, размером 50 слов.')
+        description.json()
+        task.description = description.json()['choices'][0]['message']['content']
+        db.session.commit()
+        return make_response(redirect(url_for('home')))
+    else:
+        response = make_response('Задача не найдена', 404)
+        return response
