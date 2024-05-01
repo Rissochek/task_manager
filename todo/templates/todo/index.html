@@ -1,0 +1,169 @@
+{% extends 'todo/layout.html' %}
+
+{% block content %}
+
+<div class="ui container" style="margin-top: 50px;">
+    <h1 class="ui center aligned header">Hello!</h1>
+
+    {% for category in category_list %}
+
+    <!-- category -->
+    <div class="ui segment">
+
+        <!-- name and edit -->
+        <span href="/edit_category/{{ category.id }}" class="edit_category" data-category-id="{{ category.id }}">
+            <i class="ui grey pencil alternate icon"></i>
+        </span>
+        <form class="ui input edit_category_form" action="/edit_category/{{ category.id }}" method="post">
+            <span class="ui big header" id="category_name_{{ category.id }}">{{ category.name }}</span>
+            <button type="submit" class="ui black button" id="edit_category_save_button_{{ category.id }}"
+                style="display: none;">Сохранить</button>
+        </form>
+
+        <br>
+
+
+        <!-- sorting -->
+        <form class="ui form" action="/sorting/{{ category.id }}" method="post" style="display: inline-flex;">
+            <select class="ui dropdown" name="param" onchange="this.form.submit()">
+                <option value="skip" {% if category.sorting=='skip' %} selected {% endif %}>Сортировать по</option>
+                <option value="priority" {% if category.sorting=='priority' %} selected {% endif %}>Приоритету</option>
+                <option value="status" {% if category.sorting=='status' %} selected {% endif %}>Статусу</option>
+                <option value="title" {% if category.sorting=='title' %} selected {% endif %}>Алфавиту</option>
+            </select>
+        </form>
+
+
+        <!-- filtering -->
+        <form class="ui form" action="/filtering/{{ category.id }}" method="post" style="display: inline-flex;">
+            <select class="ui dropdown" name="param" onchange="this.form.submit()">
+                <option value="skip" {% if category.filtering=='skip' %} selected {% endif %}>Фильтровать по</option>
+                <option value="1" {% if category.filtering=='1' %} selected {% endif %}>Выполненно</option>
+                <option value="0" {% if category.filtering=='0' %} selected {% endif %}>Не выполненно</option>
+            </select>
+        </form>
+
+
+        <!-- add task -->
+        <form class="ui form" action="/add_task/{{ category.id }}" method="post">
+            <div class="field">
+                <label>Новая задача</label>
+                <input type="text" name="title" placeholder="Введите название задачи" required>
+            </div>
+            <button class="ui black button" type="submit">Добавить</button>
+        </form>
+
+
+        {% for task in task_list %}
+        {% if task.category_id == category.id %}
+
+
+        <!-- task -->
+        <div class="ui segment">
+
+            <!-- title and edit -->
+            <span href="/edit_task/{{ task.id }}" class="edit_task" data-task-id="{{ task.id }}">
+                <i class="ui grey pencil alternate icon"></i>
+            </span>
+            <form class="ui input edit_task_form" action="/edit_task/{{ task.id }}" method="post">
+                <span class="ui big header" id="task_title_{{ task.id }}">{{ task.title }}</span>
+                <button type="submit" class="ui black button" id="edit_task_save_button_{{ task.id }}"
+                    style="display: none;">Сохранить</button>
+            </form>
+
+
+            <!-- description button -->
+            <a class="ui small basic button open-modal" data-task-id="{{ task.id }}">Описание задачи</a>
+
+            <br>
+
+
+            <!-- status -->
+            <a href="/update/{{ task.id }}">
+
+                {% if task.status == False %}
+                <i class="ui big grey square outline icon"></i>
+                {% else %}
+                <i class="ui big green check square icon"></i>
+                {% endif %}
+
+            </a>
+
+
+            <!-- task description + gigachat -->
+            <div id="description-{{ task.id }}" class="modal">
+                <div class="modal-content">
+                    <form class="ui form" action="/update_description/{{ task.id }}" method="post">
+                        <div class="field">
+
+                            {% if task.description == None or task.description.strip() == "" %}
+                            <textarea name="description" placeholder="Описание задачи"></textarea>
+                            {% else %}
+                            <textarea name="description">{{ task.description }}</textarea>
+                            {% endif %}
+
+                        </div>
+                        <button class="ui black button" type="submit">Подтвердить</button>
+
+                        <a class="ui green button" data-task-id="{{ task.id }}"
+                            href="/generate_description/{{ task.id }}" style="float: right;">Сгененировать</a>
+                    </form>
+                </div>
+            </div>
+
+
+            <!-- priority -->
+            <form class="ui small form" action="/set_priority/{{ task.id }}" method="post" style="display: inline;">
+                <select class="ui dropdown" onchange="this.form.submit()" name="value">
+                    <option value="6" {% if task.priority==6 %} selected {% endif %}>Задать приоритет</option>
+                    <option value="1" {% if task.priority==1 %} selected {% endif %}>Приоритет #1</option>
+                    <option value="2" {% if task.priority==2 %} selected {% endif %}>Приоритет #2</option>
+                    <option value="3" {% if task.priority==3 %} selected {% endif %}>Приоритет #3</option>
+                    <option value="4" {% if task.priority==4 %} selected {% endif %}>Приоритет #4</option>
+                    <option value="5" {% if task.priority==5 %} selected {% endif %}>Приоритет #5</option>
+                </select>
+            </form>
+
+
+            <!-- deadline -->
+            <div class="ui inverted calendar input left icon" id="example-{{ task.id }}" data-task-id="{{ task.id }}">
+                <i class="ui  calendar alternate outline icon"></i>
+                <input type="text" name="date"
+                    value="{% if task.deadline %}{{ task.deadline.strftime('%B %d, %Y %I:%M %p') }}{% endif %}"
+                    placeholder="Date/Time">
+            </div>
+
+
+            <!-- delete task -->
+            <a href="/delete_task/{{ task.id }}" style="display: inline;">
+                <i class="ui big red trash alternate outline icon"></i>
+            </a>
+
+        </div>
+
+
+        {% endif %}
+        {% endfor %}
+
+
+        <!-- delete category -->
+        <a class="ui negative button" href="/delete_category/{{ category.id }}" style="margin-top: 5px;">Удалить
+            группу</a>
+
+    </div>
+
+    {% endfor %}
+
+
+    <!-- add category -->
+    <form class="ui form" action="/add_category" method="post">
+        <div class="field">
+
+            <label>Новая группа</label>
+            <input type="text" name="name" placeholder="Введите название группы" required>
+        </div>
+        <button class="ui black button" type="submit">Добавить</button>
+    </form>
+
+</div>
+{% endblock content %}

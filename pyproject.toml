@@ -1,0 +1,26 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "task-manager1"
+version = "0.1.0"
+description = ""
+authors = ["Ruslan <ruslanynysov@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+flask = "^3.0.3"
+flask-sqlalchemy = "^3.1.1"
+sqlalchemy = "^2.0.29"
+requests = "^2.31.0"
+uuid = "^1.30"
+urllib3 = "^2.2.1"
+poetry = "^1.8.2"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.0.0"
+mypy = "^1.10.0"
+toml-sort = "^0.23.1"
+
