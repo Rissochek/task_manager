@@ -1,3 +1,7 @@
+.pencil:hover {
+    cursor: pointer;
+}
+
 .open-modal {
     float: right;
 }
