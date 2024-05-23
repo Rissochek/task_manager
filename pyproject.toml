@@ -20,6 +20,8 @@ uuid = "^1.30"
 urllib3 = "^2.2.1"
 poetry = "^1.8.2"
 rapidfuzz = "^3.8.1"
+pydantic = "^2.7.1"
+pydantic-settings = "^2.2.1"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.0.0"
