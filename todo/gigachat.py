@@ -4,11 +4,13 @@ import base64
 import uuid
 import urllib3
 
+from todo.config import settings
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-client_id = "3aada6aa-910c-4bb1-8937-4bcad901e8b2"
-secret = "a15f81b2-471f-47d2-928f-1fd4037f6e86"
-auth = "M2FhZGE2YWEtOTEwYy00YmIxLTg5MzctNGJjYWQ5MDFlOGIyOmExNWY4MWIyLTQ3MWYtNDdkMi05MjhmLTFmZDQwMzdmNmU4Ng=="
+client_id = settings.client_id
+secret = settings.secret.get_secret_value()
+auth = settings.auth.get_secret_value()
 
 credentials = f"{client_id}:{secret}"
 encoded_credentials = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
