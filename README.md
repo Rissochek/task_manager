@@ -26,3 +26,5 @@ CLIENT_ID=Ваши_данные
 SECRET=Ваши_данные
 AUTH=Ваши_данные==
  ```
+## Визуальная составляющая проекта:
+![image](https://github.com/Rissochek/task_manager/assets/146011723/5fe6b4cc-54c3-425a-927d-f8255b8ca6e6)
